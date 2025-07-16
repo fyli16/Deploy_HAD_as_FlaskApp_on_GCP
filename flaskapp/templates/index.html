@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <body>
+  
+  <h2>Predict Heart Attack Probability Based on Demographic and Clinical Characteristics</h2>
+  
+  <form method="POST" action="/">
+    Age:<br>
+    <input type="number" name="age" value="{{form_data.age}}">
+    <br><br>
+
+    Sex:<br>
+    <!-- <input type="number" name="sex" value=1>
+    <br><br> -->
+    <input type="radio" name="sex" value="Male" {% if form_data.sex == 'Male' %}checked{% endif %}> Male<br>
+    <input type="radio" name="sex" value="Female" {% if form_data.sex == 'Female' %}checked{% endif %}> Female
+    <br><br>
+
+    Chest Pain:<br>
+    <input type="radio" name="chest_pain" value="typical angina" {% if form_data.chest_pain == 'typical angina' %}checked{% endif %}> typical angina<br>
+    <input type="radio" name="chest_pain" value="asymptomatic" {% if form_data.chest_pain == 'asymptomatic' %}checked{% endif %}> asymptomatic<br>
+    <input type="radio" name="chest_pain" value="non-anginal" {% if form_data.chest_pain == 'non-anginal' %}checked{% endif %}> non-anginal<br>
+    <input type="radio" name="chest_pain" value="atypical angina" {% if form_data.chest_pain == 'atypical angina' %}checked{% endif %}> atypical angina
+    <br><br>
+
+    Blood pressure:<br>
+    <input type="number" name="blood_pressure" value="{{form_data.blood_pressure}}">
+    <br><br>
+
+    Whether blood sugar > 120:<br>
+    <input type="checkbox" name="blood_sugar" {% if form_data.blood_sugar %}checked{% endif %}>
+    <br><br>
+
+    Electrocardiogram result:<br>
+    <input type="radio" name="ecg" value="lv hypertrophy" {% if form_data.ecg == 'lv hypertrophy' %}checked{% endif %}> lv hypertrophy<br>
+    <input type="radio" name="ecg" value="normal" {% if form_data.ecg == 'normal' %}checked{% endif %}> normal<br>
+    <input type="radio" name="ecg" value="st-t abnormality" {% if form_data.ecg == 'st-t abnormality' %}checked{% endif %}> st-t abnormality
+    <br><br>
+
+    Maximum heart rate:<br>
+    <input type="number" name="max_heart_rate" value="{{form_data.max_heart_rate}}">
+    <br><br>
+
+    Exercise induced angina type:<br>
+    <input type="checkbox" name="exe_angina" {% if form_data.exe_angina %}checked{% endif %}>
+    <br><br>
+
+    ST depression count:<br>
+    <input type="number" name="st_depression" value="{{form_data.st_depression}}">
+    <br><br>
+
+    ST slope type:<br>
+    <input type="radio" name="st_slope" value="downsloping" {% if form_data.st_slope == 'downsloping' %}checked{% endif %}> downsloping<br>
+    <input type="radio" name="st_slope" value="flat" {% if form_data.st_slope == 'flat' %}checked{% endif %}> flat<br>
+    <input type="radio" name="st_slope" value="upsloping" {% if form_data.st_slope == 'upsloping' %}checked{% endif %}> upsloping
+    <br><br>
+
+    <input type="submit" value="Submit">
+  </form>
+
+  {% if pred %}
+  <p>The heart attack probability for this patient is {{ pred }}</p>
+  {% endif %}
+
+  </body>
+</html>
