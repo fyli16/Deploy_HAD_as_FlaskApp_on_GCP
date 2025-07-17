@@ -24,10 +24,10 @@
     <br><br>
 
     Blood pressure:<br>
-    <input type="number" name="blood_pressure" value="{{form_data.blood_pressure}}">
+    <input type="number" name="blood_pressure" value="{{form_data.blood_pressure}}"> mm Hg
     <br><br>
 
-    Whether blood sugar > 120:<br>
+    Whether blood sugar > 120 mg/dL:<br>
     <input type="checkbox" name="blood_sugar" {% if form_data.blood_sugar %}checked{% endif %}>
     <br><br>
 
@@ -38,15 +38,15 @@
     <br><br>
 
     Maximum heart rate:<br>
-    <input type="number" name="max_heart_rate" value="{{form_data.max_heart_rate}}">
+    <input type="number" name="max_heart_rate" value="{{form_data.max_heart_rate}}"> beats per minute
     <br><br>
 
     Exercise induced angina type:<br>
     <input type="checkbox" name="exe_angina" {% if form_data.exe_angina %}checked{% endif %}>
     <br><br>
 
-    ST depression count:<br>
-    <input type="number" name="st_depression" value="{{form_data.st_depression}}">
+    ST depression:<br>
+    <input type="number" name="st_depression" value="{{form_data.st_depression}}"> mm
     <br><br>
 
     ST slope type:<br>
