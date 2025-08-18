@@ -1,66 +1,163 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Heart Attack Risk Predictor</title>
+    <style>
+      :root {
+        --bg: #0f172a;           /* slate-900 */
+        --panel: #111827;        /* gray-900 */
+        --muted: #94a3b8;        /* slate-400 */
+        --text: #e5e7eb;         /* gray-200 */
+        --accent: #06b6d4;       /* cyan-500 */
+        --accent-2: #22d3ee;     /* cyan-400 */
+        --ring: rgba(34, 211, 238, 0.3);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background: radial-gradient(1200px 800px at 10% -10%, rgba(34,211,238,0.08), transparent),
+                    radial-gradient(1000px 700px at 120% 0%, rgba(59,130,246,0.06), transparent),
+                    var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+      }
+      header { padding: 28px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); position: sticky; top: 0; z-index: 10; }
+      .container { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+      .title { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.2px; display: flex; align-items: center; gap: 10px; }
+      .title .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 20px var(--accent); }
+      .panel { background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+      main { padding: 30px 0 50px; }
+      .subtitle { margin: 6px 0 20px; color: var(--muted); font-size: 14px; }
+      .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+      @media (max-width: 720px) { .form-grid { grid-template-columns: 1fr; } }
+      .form-group { display: flex; flex-direction: column; gap: 8px; }
+      label { font-size: 13px; color: var(--muted); }
+      .input, .radio-group { width: 100%; background: var(--panel); color: var(--text); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; outline: none; transition: border-color .2s, box-shadow .2s; }
+      .input:focus { border-color: var(--accent-2); box-shadow: 0 0 0 4px var(--ring); }
+      .radio-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+      .radio { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08); background: var(--panel); }
+      .units { color: var(--muted); font-size: 12px; margin-left: 6px; }
+      .actions { display: flex; justify-content: flex-end; margin-top: 16px; }
+      .btn { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #001219; border: 0; padding: 12px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; letter-spacing: .2px; box-shadow: 0 8px 20px rgba(34,211,238,0.2); }
+      .result { margin-top: 20px; }
+      .result-card { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+      .result-value { font-size: 20px; font-weight: 700; letter-spacing: .2px; }
+      footer { padding: 20px; color: var(--muted); font-size: 12px; text-align: center; }
+    </style>
+  </head>
   <body>
-  
-  <h2>Predict Heart Attack Probability Based on Demographic and Clinical Characteristics</h2>
-  
-  <form method="POST" action="/">
-    Age:<br>
-    <input type="number" name="age" value="{{form_data.age}}">
-    <br><br>
+    <header>
+      <div class="container">
+        <h1 class="title"><span class="dot"></span> Heart Attack Dector</h1>
+      </div>
+    </header>
 
-    Sex:<br>
-    <!-- <input type="number" name="sex" value=1>
-    <br><br> -->
-    <input type="radio" name="sex" value="Male" {% if form_data.sex == 'Male' %}checked{% endif %}> Male<br>
-    <input type="radio" name="sex" value="Female" {% if form_data.sex == 'Female' %}checked{% endif %}> Female
-    <br><br>
+    <main>
+      <div class="container">
+        <div class="panel">
+          <p class="subtitle">Estimate Heart Attack probability based on demographic and clinical characteristics.</p>
 
-    Chest Pain:<br>
-    <input type="radio" name="chest_pain" value="typical angina" {% if form_data.chest_pain == 'typical angina' %}checked{% endif %}> typical angina<br>
-    <input type="radio" name="chest_pain" value="asymptomatic" {% if form_data.chest_pain == 'asymptomatic' %}checked{% endif %}> asymptomatic<br>
-    <input type="radio" name="chest_pain" value="non-anginal" {% if form_data.chest_pain == 'non-anginal' %}checked{% endif %}> non-anginal<br>
-    <input type="radio" name="chest_pain" value="atypical angina" {% if form_data.chest_pain == 'atypical angina' %}checked{% endif %}> atypical angina
-    <br><br>
+          <form method="POST" action="/">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Age</label>
+                <input class="input" type="number" name="age" value="{{form_data.age}}" placeholder="e.g., 50">
+              </div>
 
-    Blood pressure:<br>
-    <input type="number" name="blood_pressure" value="{{form_data.blood_pressure}}"> mm Hg
-    <br><br>
+              <div class="form-group">
+                <label>Sex</label>
+                <div class="radio-group radio-row">
+                  <label class="radio"><input type="radio" name="sex" value="Male" {% if form_data.sex == 'Male' %}checked{% endif %}> Male</label>
+                  <label class="radio"><input type="radio" name="sex" value="Female" {% if form_data.sex == 'Female' %}checked{% endif %}> Female</label>
+                </div>
+              </div>
 
-    Whether blood sugar > 120 mg/dL:<br>
-    <input type="checkbox" name="blood_sugar" {% if form_data.blood_sugar %}checked{% endif %}>
-    <br><br>
+              <div class="form-group">
+                <label>Chest Pain</label>
+                <div class="radio-group radio-row">
+                  <label class="radio"><input type="radio" name="chest_pain" value="typical angina" {% if form_data.chest_pain == 'typical angina' %}checked{% endif %}> typical angina</label>
+                  <label class="radio"><input type="radio" name="chest_pain" value="asymptomatic" {% if form_data.chest_pain == 'asymptomatic' %}checked{% endif %}> asymptomatic</label>
+                  <label class="radio"><input type="radio" name="chest_pain" value="non-anginal" {% if form_data.chest_pain == 'non-anginal' %}checked{% endif %}> non-anginal</label>
+                  <label class="radio"><input type="radio" name="chest_pain" value="atypical angina" {% if form_data.chest_pain == 'atypical angina' %}checked{% endif %}> atypical angina</label>
+                </div>
+              </div>
 
-    Electrocardiogram result:<br>
-    <input type="radio" name="ecg" value="lv hypertrophy" {% if form_data.ecg == 'lv hypertrophy' %}checked{% endif %}> lv hypertrophy<br>
-    <input type="radio" name="ecg" value="normal" {% if form_data.ecg == 'normal' %}checked{% endif %}> normal<br>
-    <input type="radio" name="ecg" value="st-t abnormality" {% if form_data.ecg == 'st-t abnormality' %}checked{% endif %}> st-t abnormality
-    <br><br>
+              <div class="form-group">
+                <label>Blood pressure <span class="units">[mm Hg]</span></label>
+                <input class="input" type="number" name="blood_pressure" value="{{form_data.blood_pressure}}" placeholder="e.g., 120">
+              </div>
 
-    Maximum heart rate:<br>
-    <input type="number" name="max_heart_rate" value="{{form_data.max_heart_rate}}"> beats per minute
-    <br><br>
+              <div class="form-group">
+                <label>Blood sugar > 120 mg/dL</label>
+                <div class="radio-group radio-row">
+                  <label class="radio"><input type="checkbox" name="blood_sugar" {% if form_data.blood_sugar %}checked{% endif %}> Yes</label>
+                </div>
+              </div>
 
-    Whether exercise would induce angina:<br>
-    <input type="checkbox" name="exe_angina" {% if form_data.exe_angina %}checked{% endif %}>
-    <br><br>
+              <div class="form-group">
+                <label>Electrocardiogram result</label>
+                <div class="radio-group radio-row">
+                  <label class="radio"><input type="radio" name="ecg" value="lv hypertrophy" {% if form_data.ecg == 'lv hypertrophy' %}checked{% endif %}> lv hypertrophy</label>
+                  <label class="radio"><input type="radio" name="ecg" value="normal" {% if form_data.ecg == 'normal' %}checked{% endif %}> normal</label>
+                  <label class="radio"><input type="radio" name="ecg" value="st-t abnormality" {% if form_data.ecg == 'st-t abnormality' %}checked{% endif %}> st-t abnormality</label>
+                </div>
+              </div>
 
-    ST depression:<br>
-    <input type="number" name="st_depression" value="{{form_data.st_depression}}"> mm
-    <br><br>
+              <div class="form-group">
+                <label>Maximum heart rate <span class="units">[bpm]</span></label>
+                <input class="input" type="number" name="max_heart_rate" value="{{form_data.max_heart_rate}}" placeholder="e.g., 150">
+              </div>
 
-    ST slope type:<br>
-    <input type="radio" name="st_slope" value="downsloping" {% if form_data.st_slope == 'downsloping' %}checked{% endif %}> downsloping<br>
-    <input type="radio" name="st_slope" value="flat" {% if form_data.st_slope == 'flat' %}checked{% endif %}> flat<br>
-    <input type="radio" name="st_slope" value="upsloping" {% if form_data.st_slope == 'upsloping' %}checked{% endif %}> upsloping
-    <br><br>
+              <div class="form-group">
+                <label>Exercise-induced angina</label>
+                <div class="radio-group radio-row">
+                  <label class="radio"><input type="checkbox" name="exe_angina" {% if form_data.exe_angina %}checked{% endif %}> Yes</label>
+                </div>
+              </div>
 
-    <input type="submit" value="Submit">
-  </form>
+              <div class="form-group">
+                <label>ST depression <span class="units">[mm]</span></label>
+                <input class="input" type="number" step="0.1" name="st_depression" value="{{form_data.st_depression}}" placeholder="e.g., 2.0">
+              </div>
 
-  {% if pred %}
-  <p>The heart attack probability for this patient is {{ pred }}</p>
-  {% endif %}
+              <div class="form-group">
+                <label>ST slope type</label>
+                <div class="radio-group radio-row">
+                  <label class="radio"><input type="radio" name="st_slope" value="downsloping" {% if form_data.st_slope == 'downsloping' %}checked{% endif %}> downsloping</label>
+                  <label class="radio"><input type="radio" name="st_slope" value="flat" {% if form_data.st_slope == 'flat' %}checked{% endif %}> flat</label>
+                  <label class="radio"><input type="radio" name="st_slope" value="upsloping" {% if form_data.st_slope == 'upsloping' %}checked{% endif %}> upsloping</label>
+                </div>
+              </div>
+            </div>
 
+            <div class="actions">
+              <button class="btn" type="submit">Predict</button>
+            </div>
+          </form>
+
+          {% if pred %}
+          <div class="panel result">
+            <div class="result-card">
+              <div>
+                <div class="subtitle">Predicted probability</div>
+                <div class="result-value">{{ pred }}</div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        For research and educational use only. Predictions are estimates and not medical advice.
+      </div>
+    </footer>
   </body>
 </html>

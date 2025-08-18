@@ -82,6 +82,12 @@ def index():
                         float(ecg), float(max_heart_rate), float(exe_angina),
                         float(st_depression), float(st_slope)]])
         pred = model.predict_proba(X)[0][1]
+
+        try:
+            pred = round(pred, 4)
+        except Exception:
+            pred = None
+
     return render_template("index.html", form_data=form_data, pred=pred)
 
 
